@@ -1,4 +1,4 @@
-const client = [
+export const client = [
   { id: "8f0df472-57b2-4bd3-8402-ad226fbf4f5a", name: "TSOUKALAS/SOTIRIOS" },
   { id: "e470b4f4-4dbf-4f06-8dd1-e8ec2e5e7a09", name: "KIRIOPOULOS/MARIA" },
   { id: "529b9ec9-ea29-4860-86b5-751e325ed67d", name: "MARTINS CARRER/SIRLEY" },

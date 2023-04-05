@@ -17,15 +17,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Image from "next/image";
+import Link from "next/link";
 import "./globals.css";
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const drawerWidth = 240;
-
   const menu = [
     {
       title: "Gestão",
@@ -102,13 +101,15 @@ export default function RootLayout({
               }}
             >
               <Toolbar>
-                <Image
-                  src="/logo.png"
-                  width="160"
-                  height="40"
-                  alt=""
-                  title=""
-                />
+                <Link href="/">
+                  <Image
+                    src="/logo.png"
+                    width="160"
+                    height="40"
+                    alt=""
+                    title=""
+                  />
+                </Link>
               </Toolbar>
             </AppBar>
             <Drawer

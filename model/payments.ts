@@ -1,0 +1,21 @@
+export type TPayment = {
+  name: string;
+  customer: string;
+  paymentDate: string;
+  issuanceDoc: string;
+  issuanceDate: string;
+  routeReason: string;
+  paymentMethod: string;
+  usdProvider: number;
+  exchangeRate: number;
+  amountToPay: number;
+  fees: number;
+  usdCustomer: number;
+  amountToReceive: number;
+  serviceTax: number;
+  total: number;
+  profit: number;
+  channel: string;
+  status: string;
+  totalFees: number;
+};

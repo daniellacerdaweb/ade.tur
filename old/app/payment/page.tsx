@@ -20,7 +20,7 @@ export default function Client() {
 
   useEffect(() => {
     const fetchDados = async () => {
-      const minhaColecaoRef = collection(db, "users");
+      const minhaColecaoRef = collection(db, "payment");
       const minhaQuery = query(minhaColecaoRef, limit(PAGE_SIZE));
       const querySnapshot = await getDocs(minhaQuery);
 

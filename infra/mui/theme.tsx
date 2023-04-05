@@ -1,7 +1,5 @@
 import { createTheme } from "@mui/material";
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"] });
-const fontName = inter.style.fontFamily;
+
 
 export const theme = createTheme({
   components: {

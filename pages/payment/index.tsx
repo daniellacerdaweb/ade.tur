@@ -1,238 +1,64 @@
 import { PaymentTable } from "@/components/Chart/PaymentTable";
 import Layout from "../layout";
-const PAGE_SIZE = 10;
+import { useEffect, useState } from "react";
+import { Button, CircularProgress, LinearProgress, Typography } from "@mui/material";
+import { app } from "@/infra/firebase";
 
+import { collection, getFirestore, query, getDocs, limit, orderBy, startAfter } from "firebase/firestore";
+
+export const db = getFirestore(app);
+const numberLimit = 50
 export default function Client() {
-  
+  const [list, setList] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
+  const [docs, setDocs] = useState<any>();
+  // const lastVisible = doc.docs[doc.docs.length-1];
+
+  const fetchPayments = async () => {
+    setLoading(true);
+    const userCollection = query(collection(db, "payment"), limit(numberLimit)) ;
+    const doc = await getDocs(userCollection);
+    setDocs(doc)
+    const data = doc.docs.map((x) => {
+      const props = x.data()
+      return {id:x.id, ...props }
+    });
+      setList(data)
+      setLoading(false);
+}
+
+const moreItens = async () => {
+  setLoading(true);
+  const lastVisible = docs.docs[docs.docs.length-1];
+
+
+  const next = query(collection(db, "payment"),
+  startAfter(lastVisible),
+  limit(numberLimit));
+  const getNewDocs = await getDocs(next);
+
+  setDocs(getNewDocs)
+
+  const data = getNewDocs.docs.map((x) => {
+    const props = x.data()
+    return {id:x.id, ...props }
+  });
+
+    setList([...list,...data])
+    setLoading(false);
+}
+
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
   return (
     <>
-    <Layout>
-    <PaymentTable payments={dados} />
-    </Layout>
+      <Layout>
+      <PaymentTable payments={list} />
+         <Button onClick={moreItens}>Carregar Mais</Button>
+        {loading && <LinearProgress></LinearProgress>}
+      </Layout>
     </>
   );
 }
-
-
-const dados = [
-  {
-      "id": "07e7wG0PqqKOBWav4vKH",
-      "paymentMethod": "CARTÃO ADEMIR - AX",
-      "profit": 155.62,
-      "totalFees": 217.02,
-      "issuanceDate": "1/19/2023",
-      "serviceTax": 155.62,
-      "usdProvider": 0,
-      "paymentDate": "PAGO",
-      "exchangeRate": 0,
-      "amountToPay": 1.556,
-      "total": 1.773,
-      "fees": 61.4,
-      "name": "c3beac5d-f23d-4de8-80b9-baf697489198",
-      "channel": "SIDON",
-      "customer": "KING/GRP PALMAS 2023",
-      "status": "PENDENTE",
-      "usdCustomer": 0,
-      "routeReason": "GRU/PMW/GRU",
-      "issuanceDoc": "957-2199257313",
-      "amountToReceive": 1.556
-  },
-  {
-      "id": "0KKfooBg94zjfcAgYxg6",
-      "profit": 97.27,
-      "paymentDate": "PAGO",
-      "exchangeRate": 0,
-      "amountToReceive": 972.67,
-      "totalFees": 125.6,
-      "channel": "SIDON",
-      "issuanceDoc": "KWWLNB",
-      "serviceTax": 97.27,
-      "fees": 28.33,
-      "total": 1.098,
-      "paymentMethod": "CARTÃO ADEMIR",
-      "issuanceDate": "11/26/2021",
-      "status": "RECEBIDO",
-      "customer": "ADENIYI",
-      "usdProvider": 0,
-      "usdCustomer": 0,
-      "name": "b9bbd632-085c-4a09-987b-763a1e73bd41",
-      "routeReason": "BPS/SSA/REC",
-      "amountToPay": 972.67
-  },
-  {
-      "id": "0QPctRtrBRU87n9RrkEK",
-      "status": "RECEBIDO",
-      "issuanceDate": "1/12/2023",
-      "fees": 61.4,
-      "routeReason": "GRU/PMW/GRU",
-      "amountToPay": 1.089,
-      "usdCustomer": 0,
-      "amountToReceive": 1.185,
-      "totalFees": 179.96,
-      "serviceTax": 118.56,
-      "name": "e8cd0318-6e4a-4d68-b964-7d16b743d6b8",
-      "channel": "FLY LINK",
-      "exchangeRate": 0,
-      "profit": 214.44,
-      "usdProvider": 0,
-      "paymentDate": "PAGO",
-      "total": 1.365,
-      "customer": "KING/GRP PALMAS 2023",
-      "paymentMethod": "CARTÃO ADEMIR - MC",
-      "issuanceDoc": "957-2198528639"
-  },
-  {
-      "id": "0UU7q1lyP26KPanO4BWv",
-      "amountToPay": 6.634,
-      "issuanceDate": "7/6/2022",
-      "customer": "SIMONETTA",
-      "totalFees": 1.486,
-      "profit": 538.99,
-      "status": "RECEBIDO",
-      "issuanceDoc": "220-3983330234",
-      "usdCustomer": 1.231,
-      "usdProvider": 1.231,
-      "channel": "SIDON",
-      "paymentMethod": "CARTÃO SIMONETTA",
-      "routeReason": "FLN/SÃO/FRA/BER/ZRH/SAOFLN",
-      "serviceTax": 538.99,
-      "amountToReceive": 6.634,
-      "total": 8.121,
-      "paymentDate": "PAGO",
-      "exchangeRate": 5.39,
-      "fees": 947.09,
-      "name": "a141d611-722a-4fa7-b8fe-653aad8a974d"
-  },
-  {
-      "id": "0WugJcuPq7FZdmXcGjiF",
-      "fees": 514.38,
-      "usdCustomer": 1.336,
-      "usdProvider": 1.236,
-      "customer": "DIRETO",
-      "paymentDate": "PAGO",
-      "status": "RECEBIDO",
-      "amountToPay": 6.499,
-      "exchangeRate": 5.26,
-      "paymentMethod": "CARTÃO",
-      "issuanceDoc": "724-3778696627",
-      "amountToReceive": 7.025,
-      "serviceTax": 525.87,
-      "totalFees": 1.04,
-      "channel": "SIDON",
-      "profit": 1.02,
-      "total": 8.065,
-      "issuanceDate": "7/9/2021",
-      "name": "973f85fd-b90a-437b-934c-ee9eed228034",
-      "routeReason": "SÃO/ZRH/ATH/ZRH/SÃO"
-  },
-  {
-      "id": "18Cy88nFlxuDfBX0hVsq",
-      "channel": "SIDON",
-      "total": 494.34,
-      "issuanceDate": "9/20/2021",
-      "usdCustomer": 0,
-      "serviceTax": 44.94,
-      "customer": "BETINE SPORTS",
-      "fees": 0,
-      "totalFees": 44.94,
-      "issuanceDoc": "",
-      "paymentMethod": "CARTÃO ADEMIR",
-      "usdProvider": 0,
-      "profit": 44.94,
-      "routeReason": "SAN DIEGO PAMPULHA",
-      "amountToPay": 449.4,
-      "amountToReceive": 449.4,
-      "paymentDate": "PAGO",
-      "status": "RECEBIDO",
-      "exchangeRate": 0,
-      "name": "b909260d-e5c7-4b46-90f7-46c7bb52212f"
-  },
-  {
-      "id": "1A8usJmcoQuwEJeQ1WmW",
-      "name": "95ddb66f-d46a-4d8a-b420-929fde399a8a",
-      "usdCustomer": 1.343,
-      "serviceTax": 399.99,
-      "customer": "DIRETO",
-      "usdProvider": 1.343,
-      "paymentMethod": "CARTÃO PAX",
-      "total": 9.799,
-      "amountToReceive": 7.525,
-      "issuanceDoc": "074-9230008468",
-      "issuanceDate": "11/25/2021",
-      "exchangeRate": 5.6,
-      "fees": 1.873,
-      "paymentDate": "PAGO",
-      "routeReason": "ROM/AMS/SÃO/AMS/ROM",
-      "profit": 399.99,
-      "channel": "SIDON",
-      "totalFees": 2.273,
-      "status": "RECEBIDO",
-      "amountToPay": 7.525
-  },
-  {
-      "id": "1yv6o8MPzuFUVhzutOJ8",
-      "routeReason": "SÃO/PAR/ATH/PAR/SÃO",
-      "issuanceDoc": "057-3778696773",
-      "serviceTax": 508.21,
-      "profit": 508.21,
-      "amountToReceive": 5.253,
-      "amountToPay": 5.253,
-      "issuanceDate": "7/16/2021",
-      "totalFees": 1.281,
-      "customer": "DIRETO",
-      "usdCustomer": 1.03,
-      "paymentMethod": "CARTÃO",
-      "fees": 773.64,
-      "total": 6.534,
-      "usdProvider": 1.03,
-      "name": "e470b4f4-4dbf-4f06-8dd1-e8ec2e5e7a09",
-      "status": "RECEBIDO",
-      "channel": "SIDON",
-      "paymentDate": "PAGO",
-      "exchangeRate": 5.1
-  },
-  {
-      "id": "2e1S5ckeuG3mYcIIY9oJ",
-      "name": "2df52180-3d81-481a-a73c-12a09842cf51",
-      "exchangeRate": 0,
-      "paymentDate": "PAGO",
-      "amountToReceive": 3.364,
-      "customer": "DIRETO",
-      "issuanceDate": "5/26/2022",
-      "serviceTax": 336.49,
-      "usdProvider": 0,
-      "fees": 72.72,
-      "channel": "FLY LINK",
-      "issuanceDoc": "127-2174758633",
-      "usdCustomer": 1,
-      "totalFees": 409.21,
-      "profit": 336.49,
-      "total": 3.774,
-      "paymentMethod": "CASH",
-      "status": "RECEBIDO",
-      "amountToPay": 3.364,
-      "routeReason": "SÃO/NAT/SÃO"
-  },
-  {
-      "id": "2mBIcirOulHgFRaMB6sr",
-      "serviceTax": 399.99,
-      "amountToReceive": 2.945,
-      "totalFees": 2.352,
-      "usdCustomer": 593,
-      "profit": 399.99,
-      "paymentMethod": "CARTÃO CLIENTE",
-      "exchangeRate": 4.97,
-      "usdProvider": 593,
-      "fees": 1.952,
-      "customer": "DIRETO",
-      "amountToPay": 2.945,
-      "issuanceDate": "3/22/2022",
-      "name": "fe44bb7a-24b3-4cf9-9bc3-602184069cf8",
-      "channel": "SIDON",
-      "issuanceDoc": "075-6995211992",
-      "routeReason": "NAP/MAD/SÃO/LON/ROM",
-      "total": 5.297,
-      "status": "RECEBIDO",
-      "paymentDate": "PAGO"
-  }
-]

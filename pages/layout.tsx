@@ -3,6 +3,8 @@ import IconAccountCircle from "@mui/icons-material/AccountCircleRounded";
 import IconAddShoppingCart from "@mui/icons-material/AddShoppingCartRounded";
 import IconAttachMoney from "@mui/icons-material/AttachMoneyRounded";
 import IconListAl from "@mui/icons-material/ListAltRounded";
+
+import HomeIcon from '@mui/icons-material/Home';
 import IconInbox from "@mui/icons-material/MoveToInbox";
 import IconTimeline from "@mui/icons-material/TimelineRounded";
 import { Typography } from "@mui/material";
@@ -26,17 +28,34 @@ export default function Layout({
   const drawerWidth = 240;
   const menu = [
     {
+      title: "Home",
+      item: [
+        {
+          icon: <HomeIcon  fontSize="small" sx={{ mr: 2, color: "#364152" }} />,
+          title: "Home",
+          path:'/',
+          disabled:true
+        },
+       
+      ],
+    },
+    {
       title: "Gestão",
       item: [
         {
           icon: <IconInbox fontSize="small" sx={{ mr: 2, color: "#364152" }} />,
           title: "Vendas",
+          path:'/payment',
+          disabled:true
+
         },
         {
           icon: (
             <IconTimeline fontSize="small" sx={{ mr: 2, color: "#364152" }} />
           ),
           title: "Relatórios",
+          disabled:false
+
         },
         {
           icon: (
@@ -46,6 +65,8 @@ export default function Layout({
             />
           ),
           title: "Orçamento",
+          disabled:false
+
         },
       ],
     },
@@ -60,6 +81,8 @@ export default function Layout({
             />
           ),
           title: "Fatura",
+          disabled:false
+
         },
       ],
     },
@@ -74,12 +97,16 @@ export default function Layout({
             />
           ),
           title: "Clientes",
+          disabled:false
+
         },
         {
           icon: (
             <IconListAl fontSize="small" sx={{ mr: 2, color: "#364152" }} />
           ),
           title: "Serviços",
+          disabled:false
+
         },
       ],
     },
@@ -101,13 +128,13 @@ export default function Layout({
             >
               <Toolbar>
                 <Link href="/">
-                  <Image
+                  {/* <Image
                     src="/logo.png"
                     width="160"
                     height="40"
                     alt=""
                     title=""
-                  />
+                  /> */}
                 </Link>
               </Toolbar>
             </AppBar>
@@ -127,15 +154,18 @@ export default function Layout({
               <Box sx={{ overflow: "auto" }}>
                 {menu.map((data) => {
                   return (
-                    <List subheader={<Title>Gestão</Title>} key={data.title}>
+                 <List subheader={<Title>{data.title}</Title>} key={data.title}>
                       {data.item.map((text, index) => (
-                        <ListItem key={index} disablePadding>
+                          <Link href={text.path || '#'}  key={index} style={{textDecoration:'none'}}  > 
+                        <ListItem disablePadding disabled={!text.disabled}>
                           <ListItemButton>
                             {text.icon}
                             <ListItemText primary={text.title} />
                           </ListItemButton>
                         </ListItem>
+                        </Link>
                       ))}
+
                     </List>
                   );
                 })}
